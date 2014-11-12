@@ -1,3 +1,118 @@
+/**
+ * It draws rectangular shape along selected elements
+ * Usage:
+ *  drawShape(<<selector>>)
+ *  i.e. 
+ *    drawShape("div")
+ * 
+ * Big thanks to flatten.js by Timo, https://github.com/timo22345
+ */
+(function() {
+  
+  /**
+   * get calculated style of an element
+   */
+  var getStyle =  function(el,styleProp) {
+    var style;
+    if (el.currentStyle) {
+      style = el.currentStyle[styleProp];
+    } else if (window.getComputedStyle) {
+      style = document.defaultView.getComputedStyle(el,null).getPropertyValue(styleProp);
+    }
+    return style;
+  };
+
+  /**
+   * get svg rect from an html element
+   */
+  var getRectFromEl = function(el) {
+    var rect = document.createElementNS("http://www.w3.org/2000/svg", "rect");
+    var cr = el.getBoundingClientRect();
+    var borderRadius =  getStyle(el, "border-radius");
+    rect.setAttribute("x", cr.left);
+    rect.setAttribute("y", cr.top );
+    rect.setAttribute("width", cr.width );
+    rect.setAttribute("height", cr.height);
+    rect.setAttribute("rx",borderRadius.replace("px",""));
+    rect.setAttribute("ry",borderRadius.replace("px",""));
+    rect.setAttribute("style", "fill:none;stroke:black;stroke-width:1");
+    return rect;
+  };
+
+  /**
+   * check if element is in viewport
+   */
+  var isElInViewport = function(el) {
+    var innerRect = el.getBoundingClientRect();
+    var windowHeight = window.innerHeight;
+    var windowWidth = window.innerWidth;
+    return (
+      innerRect.top >= 0 && 
+      innerRect.left >= 0 &&
+      innerRect.bottom <= windowHeight &&
+      innerRect.right <= windowWidth
+    );
+  };
+  
+  /**
+   * draw path with animation
+   */
+  var drawPath= function(path) {
+    if (path.getTotalLength) {
+      var length = path.getTotalLength();
+      path.style.transition = 'none';
+      path.style.strokeDasharray = length + ' ' + length;
+      path.style.strokeDashoffset = length;
+      path.getBoundingClientRect();
+      path.style.transition ='stroke-dashoffset 2s ease-in-out';
+      path.style.strokeDashoffset = '0';
+    } else {
+      console.log("not a path", path);
+    }
+  };
+  
+  /**
+   * return svg canvas, create one if not exists
+   */
+  var getCanvas = function() {
+    var svg = document.querySelector('svg#canvas');
+    if (!svg) {
+      svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+      svg.setAttribute('id', 'canvas');
+      svg.setAttribute('style', 'z-index:100; position:fixed; top:0; left: 0;background:#fff;' 
+        + ' bottom: 0; right: 0; opacity:1.5');
+      svg.setAttribute('width', '100%');
+      svg.setAttribute('height', '100%');
+      svg.setAttributeNS("http://www.w3.org/2000/xmlns/", "xmlns:xlink", "http://www.w3.org/1999/xlink");
+      document.body.appendChild(svg);
+    }
+    return svg;
+  };
+  
+  var drawPage = function(selector) {
+    selector = selector || "div";
+    var els = document.querySelectorAll(selector);
+    var canvas = getCanvas();
+    for (i=0; i<els.length; i++) {
+      var el = els[i];
+      if (isElInViewport(el)) {
+        var rect = getRectFromEl(el);
+        canvas.appendChild(rect);
+      }
+    }
+    flatten(canvas); // all rect is changed to path 
+    for (var i=0; i<canvas.children.length; i++) {
+      var path = canvas.children[i];
+      drawPath(path);
+    }
+    setTimeout(function(){
+      canvas.remove();
+    },2500)
+  };
+  
+  /** export only one function */
+  window.drawPage = drawPage;
+})();
 /*  
 Usage example: http://jsfiddle.net/Nv78L/1/embedded/result/
 
@@ -1182,120 +1297,4 @@ THE SOFTWARE.
   // Export function
   window.flatten = flatten;
 
-})();
-
-/**
- * It draws rectangular shape along selected elements
- * Usage:
- *  drawShape(<<selector>>)
- *  i.e. 
- *    drawShape("div")
- * 
- * Big thanks to flatten.js by Timo, https://github.com/timo22345
- */
-(function() {
-  
-  /**
-   * get calculated style of an element
-   */
-  var getStyle =  function(el,styleProp) {
-    var style;
-    if (el.currentStyle) {
-      style = el.currentStyle[styleProp];
-    } else if (window.getComputedStyle) {
-      style = document.defaultView.getComputedStyle(el,null).getPropertyValue(styleProp);
-    }
-    return style;
-  };
-
-  /**
-   * get svg rect from an html element
-   */
-  var getRectFromEl = function(el) {
-    var rect = document.createElementNS("http://www.w3.org/2000/svg", "rect");
-    var cr = el.getBoundingClientRect();
-    var borderRadius =  getStyle(el, "border-radius");
-    rect.setAttribute("x", cr.left);
-    rect.setAttribute("y", cr.top );
-    rect.setAttribute("width", cr.width );
-    rect.setAttribute("height", cr.height);
-    rect.setAttribute("rx",borderRadius.replace("px",""));
-    rect.setAttribute("ry",borderRadius.replace("px",""));
-    rect.setAttribute("style", "fill:none;stroke:black;stroke-width:1");
-    return rect;
-  };
-
-  /**
-   * check if element is in viewport
-   */
-  var isElInViewport = function(el) {
-    var innerRect = el.getBoundingClientRect();
-    var windowHeight = window.innerHeight;
-    var windowWidth = window.innerWidth;
-    return (
-      innerRect.top >= 0 && 
-      innerRect.left >= 0 &&
-      innerRect.bottom <= windowHeight &&
-      innerRect.right <= windowWidth
-    );
-  };
-  
-  /**
-   * draw path with animation
-   */
-  var drawPath= function(path) {
-    if (path.getTotalLength) {
-      var length = path.getTotalLength();
-      path.style.transition = 'none';
-      path.style.strokeDasharray = length + ' ' + length;
-      path.style.strokeDashoffset = length;
-      path.getBoundingClientRect();
-      path.style.transition ='stroke-dashoffset 2s ease-in-out';
-      path.style.strokeDashoffset = '0';
-    } else {
-      console.log("not a path", path);
-    }
-  };
-  
-  /**
-   * return svg canvas, create one if not exists
-   */
-  var getCanvas = function() {
-    var svg = document.querySelector('svg#canvas');
-    if (!svg) {
-      svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
-      svg.setAttribute('id', 'canvas');
-      svg.setAttribute('style', 'z-index:100; position:fixed; top:0; left: 0;background:#fff;' 
-        + ' bottom: 0; right: 0; opacity:1.5');
-      svg.setAttribute('width', '100%');
-      svg.setAttribute('height', '100%');
-      svg.setAttributeNS("http://www.w3.org/2000/xmlns/", "xmlns:xlink", "http://www.w3.org/1999/xlink");
-      document.body.appendChild(svg);
-    }
-    return svg;
-  };
-  
-  var drawPage = function(selector) {
-    selector = selector || "div";
-    var els = document.querySelectorAll(selector);
-    var canvas = getCanvas();
-    for (i=0; i<els.length; i++) {
-      var el = els[i];
-      if (isElInViewport(el)) {
-        var rect = getRectFromEl(el);
-        canvas.appendChild(rect);
-      }
-    }
-    flatten(canvas); // all rect is changed to path 
-    for (var i=0; i<canvas.children.length; i++) {
-      var path = canvas.children[i];
-      drawPath(path);
-    }
-    setTimeout(function(){
-      canvas.remove();
-    },2500)
-  };
-  
-  /** export only one function */
-  window.drawPage = drawPage;
 })();

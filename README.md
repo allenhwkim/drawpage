@@ -13,7 +13,7 @@ How to use
 
   * To draw page every time when page loads, append the following code at the end of your page
 
-        <script src="draw-page.js"></script>
+        <script src="https://rawgit.com/allenhwkim/drawpage/master/draw-page.js"></script>
         <script>drawPage()</script>
 
   * Or, only to test how it looks like 
@@ -39,3 +39,4 @@ Options
 
     `drawPage("table")` will draw all tables in the document.  
     `drawPage(".drawme")` will draw all elements that has `drawme` class.
+
