@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <style>
+    html, body {width: 100%;height:100%}
+    #boxes {
+      display: flex;
+      width: 100%; 
+      height: 100%;
+    }
+    #boxes div {
+      margin: 10px;
+      background: #ccc;
+      border-radius: 10px;
+    }
+  </style>
+  <script src="draw-page.js"></script>
+  <script>
+  function drawRandom() {
+    var boxes = document.querySelector("#boxes");
+    var rowCol = Math.floor(Math.random()*2) == 1 ? "row" : "column"
+    boxes.style.flexFlow = rowCol;
+    boxes.style.flexWrap = "wrap";
+    console.log('rowCol', rowCol, boxes.style.flexFlow );
+    for (var i=0; i<20; i++) {
+      var div= document.createElement("div");
+      var rand = Math.floor(Math.random()*30) + 10;
+      if (rowCol == "row") {
+        div.style.width= rand + "%";
+        div.style.height = "15%";
+      } else {
+        div.style.width = "15%";
+        div.style.height = rand + "%";
+      }
+      boxes.appendChild(div);
+    }
+  }
+  </script>
+</head>
+
+<body>
+  <button onclick="drawPage()">DrawPage</button>
+  <button onclick="location.reload()">Reload</button>
+  <div id="boxes"></div>
+  <script>drawRandom(); drawPage()</script>
+</body>
+</html>
