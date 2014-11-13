@@ -3,15 +3,34 @@
 <head>
   <style>
     html, body {width: 100%;height:100%}
+    body {
+      background: #eee
+    }
     #boxes {
       display: flex;
       width: 100%; 
       height: 100%;
     }
     #boxes div {
+      display: flex;
+      justify-content: center;
+      align-items: center;
       margin: 10px;
-      background: #ccc;
-      border-radius: 10px;
+      background: #fff;
+      font-size: 2em;
+      box-shadow: inset 0 0 1em gold, 0 0 1em red;
+    }
+    #buttons {
+      text-align: center
+    }
+    #buttons button {
+      font-size: 1.2em;
+      background-color: #ccc;
+      color: #fff;
+      font-family: courier;
+    }
+    #buttons button:hover {
+      color: yellow;
     }
   </style>
   <script src="draw-page.js"></script>
@@ -25,6 +44,7 @@
     for (var i=0; i<20; i++) {
       var div= document.createElement("div");
       var rand = Math.floor(Math.random()*30) + 10;
+      var br = Math.floor(Math.random()*300);
       if (rowCol == "row") {
         div.style.width= rand + "%";
         div.style.height = "15%";
@@ -32,6 +52,8 @@
         div.style.width = "15%";
         div.style.height = rand + "%";
       }
+      div.style.borderRadius = br + 'px';
+      div.innerHTML = i+1;
       boxes.appendChild(div);
     }
   }
@@ -39,9 +61,11 @@
 </head>
 
 <body>
-  <button onclick="drawPage()">DrawPage</button>
-  <button onclick="location.reload()">Reload</button>
+  <div id="buttons">
+    <button onclick="drawPage('#boxes div')">drawPage()</button> or
+    <button onclick="location.reload()">reload()</button>
+  </div>
   <div id="boxes"></div>
-  <script>drawRandom(); drawPage()</script>
+  <script>drawRandom(); drawPage("#boxes div")</script>
 </body>
 </html>
