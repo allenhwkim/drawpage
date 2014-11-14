@@ -6,7 +6,11 @@ Draw outline of your web page and disappear.
 
 Inspired by [svg drawing animation](http://tympanus.net/Development/SVGDrawingAnimation/), I thought we can draw any outline of any webpage by following the paths of box models, and this is the result.
 
-[demo](https://rawgit.com/allenhwkim/drawpage/master/demo1.html)
+ * [demo for github](https://rawgit.com/allenhwkim/drawpage/master/demo/github.com-explore.html.html)
+ * [demo for Google](https://rawgit.com/allenhwkim/drawpage/master/demo/Google.html)
+ * [demo for Amazon](https://rawgit.com/allenhwkim/drawpage/master/demo/amazon.com.html)
+ * [demo for Facebook](https://rawgit.com/allenhwkim/drawpage/master/demo/facebook.html)
+ * [demo for demo](https://rawgit.com/allenhwkim/drawpage/master/demo/demo1.html)
 
 How to use
 ----------
