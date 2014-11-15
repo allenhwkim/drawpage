@@ -7,8 +7,6 @@ Draw outline of your web page and disappear.
 Inspired by [svg drawing animation](http://tympanus.net/Development/SVGDrawingAnimation/), I thought we can draw any outline of any webpage by following the paths of box models, and this is the result.
 
  * [demo for github](https://rawgit.com/allenhwkim/drawpage/master/demo/github.com-explore.html.html)
- * [demo for Google](https://rawgit.com/allenhwkim/drawpage/master/demo/Google.html)
- * [demo for Amazon](https://rawgit.com/allenhwkim/drawpage/master/demo/amazon.com.html)
  * [demo for Facebook](https://rawgit.com/allenhwkim/drawpage/master/demo/facebook.html)
  * [demo for demo](https://rawgit.com/allenhwkim/drawpage/master/demo/demo1.html)
 
@@ -33,14 +31,22 @@ How to use
 
     3. run `drawPage()` command
 
-Options
--------
-    
-  drawPage function accepts one parameter
+Functions
+----------
 
-  * css selector  
-    in default, "div". For example;  
+ 1. **drawPage** function  
+    Draw all given elements, and disappear when finished.
 
-    `drawPage("table")` will draw all tables in the document.  
-    `drawPage(".drawme")` will draw all elements that has `drawme` class.
+   * argument 
+      * optional, css selector  
+        in default, "div". For example;  
+        `drawPage("table")` will draw all tables in the document.  
+        `drawPage(".drawme")` will draw all elements that has `drawme` class.
 
+ 2. **cutIntoEl** function  
+   Draw a single element, and highlight it with the effect of cutting into the element.   
+   The drawing canvas will not disappear and wait for the user to click that element.   
+
+   * argument 
+      * required, css selector or HTML element  
+       `cutIntoEl("#myDiv")` will draw an element with id, `myDiv`, then wait for click

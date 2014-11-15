@@ -89,7 +89,55 @@
     return svg;
   };
   
-  var drawPage = function(selector) {
+  var cutIntoEl = function(el) {
+    if (typeof el === "string") {
+      el = document.querySelector(el);
+    }
+    if (el) {
+      el.scrollIntoView(false);
+    } else {
+      throw "Invalid element";
+    }
+
+    /* remove existing canvas */
+    var canvas = document.querySelector('svg#canvas');
+    canvas && canvas.remove();
+
+    /* get a new canvas */
+    var canvas = getCanvas();
+    canvas.style.backgroundColor = "rgba(0,0,0,0.5)";
+    canvas.id = "cut-into-el-canvas";
+    var cr = canvas.parentNode.getBoundingClientRect();
+    var cx = cr.width, cy = cr.height;
+
+    /* draw element */
+    var rect = getRectFromEl(el);
+    rect.style.stroke = "rgba(255,200,200,1)";
+    canvas.appendChild(rect);
+    flatten(canvas); // all rect is changed to path 
+    var path = canvas.children[0];
+    drawPath(path);
+
+    /* cut into element */
+    setTimeout(function(){
+      canvas.style.backgroundColor = "transparent";
+      path.style.fill = "rgba(0,0,0,0.5)";
+      path.style.fillRule = "evenodd";
+      var attrD = path.getAttribute("d");
+      path.setAttribute("d", attrD + " M0,0 l"+cx+",0" + " 0,"+cy + " -"+cx+",0" + " 0,-"+cy+"Z");
+
+      /* provide a way to remove canvas */
+      path.onclick = function(e) { 
+        e.stopPropagation && e.stopPropagation();
+        !e && (window.event.cancelBubble = true);
+      }
+      canvas.onclick = function() {
+        canvas.remove();
+      };
+    }, 2500);
+  };
+
+  var drawPage = function(selector, noClear) {
     selector = selector || "div";
     var els = document.querySelectorAll(selector);
     var canvas = getCanvas();
@@ -105,14 +153,20 @@
       var path = canvas.children[i];
       drawPath(path);
     }
-    setTimeout(function(){
-      canvas.remove();
-    },2500)
+    if (!noClear) {
+      setTimeout(function(){
+        canvas.remove();
+      },2500);
+    }
   };
+
   
-  /** export only one function */
+  /** export functions */
+  window.cutIntoEl = cutIntoEl;
   window.drawPage = drawPage;
 })();
+
+
 /*  
 Usage example: http://jsfiddle.net/Nv78L/1/embedded/result/
 

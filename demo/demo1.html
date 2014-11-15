@@ -43,6 +43,7 @@
     console.log('rowCol', rowCol, boxes.style.flexFlow );
     for (var i=0; i<20; i++) {
       var div= document.createElement("div");
+      div.id = "no"+(i+1);
       var rand = Math.floor(Math.random()*30) + 10;
       var br = Math.floor(Math.random()*300);
       if (rowCol == "row") {
@@ -63,6 +64,8 @@
 <body>
   <div id="buttons">
     <button onclick="drawPage('#boxes div')">drawPage()</button> or
+    <button onclick="cutIntoEl('#boxes div#no'+(Math.floor(Math.random()*20)+1))">cutIntoEl()</button> 
+    &nbsp; &nbsp; &nbsp;
     <button onclick="location.reload()">reload()</button>
   </div>
   <div id="boxes"></div>
